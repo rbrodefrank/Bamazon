@@ -157,17 +157,17 @@ function stockQuantity(product) {
                 {
                     item_id: product.item_id
                 },
-                function(error, res) {
-                    if(error) throw error;
+                function (error, res) {
+                    if (error) throw error;
                     var currentStock = res[0].stock_quantity;
                     connection.query(
                         "UPDATE products SET ? WHERE ?",
                         [
-                            {stock_quantity: currentStock + num},
-                            {item_id: product.item_id}
+                            { stock_quantity: currentStock + num },
+                            { item_id: product.item_id }
                         ],
-                        function(error, res) {
-                            if(error) throw error;
+                        function (error, res) {
+                            if (error) throw error;
                             console.log(`Increased ${product.product_name} by ${num}. Total stock is now ${num + currentStock}`);
                             main();
                         }
@@ -184,6 +184,162 @@ function stockQuantity(product) {
 }
 
 function addItem() {
-    console.log("Not implemented");
-    main();
+    var newProduct = {
+        product_name: "",
+        department_name: "",
+        stock_quantity: -4,
+        price: -4
+    }
+    itemName(newProduct);
+    function itemName(newProduct) {
+        inquirer.prompt([
+            {
+                name: "name",
+                type: "input",
+                message: "What is the name of the new item?"
+            }
+        ]).then(function (answers) {
+            newProduct.product_name = answers.name;
+            inquirer.prompt([
+                {
+                    name: "confirm",
+                    type: "confirm",
+                    message: `Is '${newProduct.product_name}' correct?`
+                }
+            ]).then(function (answers) {
+                if (answers.confirm) {
+                    itemDepartment(newProduct);
+                } else {
+                    newProduct.product_name = "";
+                    itemName(newProduct);
+                }
+            });
+        });
+    }
+
+    function itemDepartment(newProduct) {
+        inquirer.prompt([
+            {
+                name: "department",
+                type: "input",
+                message: "What department is the new item a part of?"
+            }
+        ]).then(function (answers) {
+            newProduct.department_name = answers.department;
+            inquirer.prompt([
+                {
+                    name: "confirm",
+                    type: "confirm",
+                    message: `Is '${newProduct.department_name}' correct?`
+                }
+            ]).then(function (answers) {
+                if (answers.confirm) {
+                    itemQuantity(newProduct);
+                } else {
+                    newProduct.product_name = "";
+                    itemDepartment(newProduct);
+                }
+            });
+        });
+    }
+
+    function itemQuantity(newProduct) {
+        inquirer.prompt([
+            {
+                name: "quantity",
+                type: "input",
+                message: "What is the initial inventory ammount?"
+            }
+        ]).then(function (answers) {
+            var num = parseInt(answers.quantity);
+            if (!Number.isNaN(num)) {
+                if (num >= 0) {
+                    newProduct.stock_quantity = num;
+                    inquirer.prompt([
+                        {
+                            name: "confirm",
+                            type: "confirm",
+                            message: `Is '${newProduct.stock_quantity}' correct?`
+                        }
+                    ]).then(function (answers) {
+                        if (answers.confirm) {
+                            itemPrice(newProduct);
+                        } else {
+                            newProduct.stock_quantity = -4;
+                            itemQuantity(newProduct);
+                        }
+                    });
+                } else {
+                    console.log("Initial stock quantity must be greater than or equal to zero.")
+                    itemQuantity(newProduct);
+                }
+            } else {
+                console.log("Invalid Input: Please enter a number");
+                itemQuantity(newProduct);
+            }
+        });
+    }
+
+    function itemPrice(newProduct) {
+        inquirer.prompt([
+            {
+                name: "price",
+                type: "input",
+                message: "What is the item's sale price?"
+            }
+        ]).then(function (answers) {
+            var num = parseFloat(answers.price);
+            if (!Number.isNaN(num)) {
+                num = Math.floor(num * 100) / 100; //floor to 1/100th decimal place
+                if (num >= 0) {
+                    newProduct.price = num;
+                    inquirer.prompt([
+                        {
+                            name: "confirm",
+                            type: "confirm",
+                            message: `Is '${newProduct.price}' correct?`
+                        }
+                    ]).then(function (answers) {
+                        if (answers.confirm) {
+                            postItem(newProduct);
+                        } else {
+                            newProduct.price = -4;
+                            itemPrice(newProduct);
+                        }
+                    });
+                } else {
+                    itemPrice(newProduct);
+                }
+            } else {
+                console.log("Invalid Input: Please enter a number");
+                itemPrice();
+            }
+        });
+    }
+
+    function postItem(newProduct) {
+        console.log(newProduct);
+        inquirer.prompt([
+            {
+                name: "confirm",
+                type: "confirm",
+                message: `Are all values above correct?`
+            }
+        ]).then(function(answers){
+            if(answers.confirm) {
+                connection.query(
+                    "INSERT INTO products SET ?",
+                    newProduct,
+                    function (error, res) {
+                        if (error) throw error;
+                        console.log(res);
+                        main();
+                    }
+                )
+            } else {
+                console.log("Add item cancelled.")
+                main();
+            }
+        });
+    }
 }
