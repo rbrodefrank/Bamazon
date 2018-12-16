@@ -105,7 +105,7 @@ function getSum(count) {
             { department_name: departments[count].department_name },
             function (error, res) {
                 if (error) throw error;
-                console.log(res);
+                // console.log(res);
                 departments[count].product_sales = res[0].product_sales;
                 departments[count].total_profit = departments[count].product_sales - departments[count].overhead_costs;
                 count++;

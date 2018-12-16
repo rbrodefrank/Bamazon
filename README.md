@@ -3,7 +3,7 @@ Bamazon is an interactive program for buying, stocking, and keeping track of sto
 
 The three programs and their functionalities are listed below.
 
-1. Customer (bamazonCustomer.js)
+1 - Customer (bamazonCustomer.js)
 Customers have a varity of options when they use the bamazon app.
     -Product List: View the products that are currently offered and their prices.
     -Product Purchase: Add a product to their cart at the desired quantity
@@ -12,7 +12,7 @@ Customers have a varity of options when they use the bamazon app.
 
 <img src="./readMeGifs/customerDemo.gif">
 
-2. Manager (bamazonManager.js)
+2 - Manager (bamazonManager.js)
 Managers have their own options to use when they use the Manager app.
     -Products for Sale: View the products that are currently offered and their prices.
     -View Low Inventory: View all the products that have less than 10 items left in stock.
@@ -21,11 +21,13 @@ Managers have their own options to use when they use the Manager app.
 
 <img src="./readMeGifs/managerDemo.gif">
 
-3. Supervisor (bamazonSupervisor.js)
+3 - Supervisor (bamazonSupervisor.js)
 Supervisors have their own options to use when they use the Supervisor app.
     -Product List: View the products that are currently offered and their prices.
     -Product Sales by Department: View the departments sales, overhead, and total profit.
     -Create New Department: Create a new department in the department table of the database.
+
+<img src="./readMeGifs/supervisorDemo.gif">
 
 Every input from all three of the programs is sanitized to decrease errors in data and the program.
 
