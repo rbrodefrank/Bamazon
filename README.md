@@ -1,4 +1,4 @@
-# Bamazon
+# Bamazon by Ryan BrodeFrank
 Bamazon is an interactive program for buying, stocking, and keeping track of store inventory. It is meant to be used by three seperate user types: customers, managers, and supervisors. Each program of the corrosponding name will perform different tasks according to what that user might need. Product inventory, prices, and sales totals are kept track of in the 'products' table the bamazon.sql bamazon database. Department name's, id's, and overhead costs are kept in the same database under the 'departments' table. 
 
 The three programs and their functionalities are listed below.
