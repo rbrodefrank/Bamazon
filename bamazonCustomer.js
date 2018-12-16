@@ -235,6 +235,7 @@ function checkStock(count) {
             }
         )
     } else {
+        cart = [];
         console.log("You have successfully checked out.\n");
         main();
     }
