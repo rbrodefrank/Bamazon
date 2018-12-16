@@ -187,6 +187,7 @@ function addItem() {
     var newProduct = {
         product_name: "",
         department_name: "",
+        department_id: -4,
         stock_quantity: -4,
         price: -4
     }
@@ -234,7 +235,29 @@ function addItem() {
                 }
             ]).then(function (answers) {
                 if (answers.confirm) {
-                    itemQuantity(newProduct);
+                    connection.query(
+                        "SELECT department_name, department_id FROM departments",
+                        function(error, res) {
+                            if(error) throw error;
+                            for(var i = 0; i < res.length; i++) {
+                                if(res[i].department_name.toLowerCase() == newProduct.department_name.toLowerCase()) {
+                                    newProduct.department_name = res[i].department_name;
+                                    newProduct.department_id = res[i].department_id;
+                                    break;
+                                }
+                            }
+
+                            if(newProduct.department_id > 0) {
+                                console.log(`\nDepartment Found.\nDepartment Name: ${newProduct.department_name}\nDepartment ID: ${newProduct.department_id}\n`);
+                                itemQuantity(newProduct);
+                            } else {
+                                newProduct.department_name = "";
+                                console.table(res);
+                                console.log("Department not found input department name from above list\n");
+                                itemDepartment(newProduct);
+                            }
+                        }
+                    )
                 } else {
                     newProduct.product_name = "";
                     itemDepartment(newProduct);
@@ -332,12 +355,13 @@ function addItem() {
                     newProduct,
                     function (error, res) {
                         if (error) throw error;
-                        console.log(res);
+                        // console.log(res);
+                        console.log("\nNew product added.\n")
                         main();
                     }
                 )
             } else {
-                console.log("Add item cancelled.")
+                console.log("\nAdd item cancelled.\n")
                 main();
             }
         });

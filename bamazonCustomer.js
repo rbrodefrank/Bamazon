@@ -116,16 +116,15 @@ function purchaseProduct() {
 
 function cartList(checkout) {
     if (cart.length < 1) {
-        console.log("Cart Empty!");
+        console.log("Cart Empty!\n");
     } else {
         console.log();
         console.table(cart);
-        console.log();
         var totalPrice = 0;
         for (var i = 0; i < cart.length; i++) {
             totalPrice += cart[i].quantity * cart[i].price;
         }
-        console.log(`Total: ${totalPrice}`);
+        console.log(`Total: ${totalPrice}\n`);
     }
     if (!checkout) {
         main();
@@ -196,7 +195,7 @@ function checkStock(count) {
     if (count < cart.length) {
         // console.log(`cart[${count}]: ${cart[count].item_id}`);
         connection.query(
-            "SELECT stock_quantity FROM products WHERE ?",
+            "SELECT * FROM products WHERE ?",
             {
                 item_id: cart[count].item_id
             },
@@ -204,7 +203,7 @@ function checkStock(count) {
                 if (error) throw error;
                 // console.log("returned " + count)
                 // console.log(res[0].stock_quantity);
-
+                var currentSales = res[0].product_sales;
                 if (res[0].stock_quantity <= 0) {
                     console.log(`\n${cart[count].product_name} is Out of Stock. Item removed from cart list`);
                     cart[count].quantity = 0;
@@ -217,7 +216,8 @@ function checkStock(count) {
                     "UPDATE products SET ? WHERE ?",
                     [
                         {
-                            stock_quantity: res[0].stock_quantity - cart[count].quantity
+                            stock_quantity: res[0].stock_quantity - cart[count].quantity,
+                            product_sales: res[0].product_sales + (cart[count].quantity * cart[count].price)
                         },
                         {
                             item_id: cart[count].item_id
