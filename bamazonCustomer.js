@@ -25,10 +25,10 @@ var connection = mysql.createConnection({
 connection.connect(function (err) {
     if (err) throw err;
     console.log("connected as id " + connection.threadId);
-    afterConnection();
+    productList();
 });
 
-function afterConnection() {
+function productList() {
     connection.query("SELECT * FROM products", function (err, res) {
         if (err) throw err;
         // console.log(res);
@@ -62,7 +62,7 @@ function main() {
     ]).then(function (response) {
         switch (response.main) {
             case "Product List":
-                afterConnection();
+                productList();
                 break;
             case "Product Purchase":
                 purchaseProduct();
